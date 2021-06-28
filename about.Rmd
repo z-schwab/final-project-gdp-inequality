@@ -1,0 +1,16 @@
+---
+title: "About this site"
+description: |
+  Some additional details about myself and the project.
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## About Me
+I'm a 15-year-old student in Massachusetts, USA who likes coding, quantum mechanics, music, and Lord of the Rings.
+
+## About this Project
+This is the final project I created for David Kane's Free High School Data Science Bootcamp.
+(<https://bootcamp.davidkane.info/>)

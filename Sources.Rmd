@@ -1,0 +1,31 @@
+---
+title: "Sources"
+description: |
+  These are the data sources I used to create this project.
+author:
+  - name: Z Schwab 
+
+date: "`r Sys.Date()`"
+output: distill::distill_article
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+### Plot 1:
+* World Bank (<https://data.worldbank.org>)
+* United Nations Development Programme (<https://www.undp.org/>)
+
+### Plot 2:
+* OECD / Organisation for Economic Co-operation and Development (<https://www.oecd.org/>)
+
+
+
+Distill is a publication format for scientific and technical writing, native to the web. 
+
+Learn more about using Distill for R Markdown at <https://rstudio.github.io/distill>.
+
+
+
+
+

@@ -1,0 +1,83 @@
+---
+title: "GDP and Income Inequality"
+description: |
+  A comparison of countries' GDP with various income equality metrics.
+site: distill::distill_website
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(rvest)
+library(dplyr)
+library(ggthemes)
+library(plotly)
+```
+
+
+```{r import data}
+gdp <- read_csv("gdp_per_capita$.csv", col_types = cols(`Country Name` = col_character(),
+  `2017` = col_double()))
+
+onepercent <- read_csv(file = "richest 1 percent.csv", skip = 1, col_names = c("Country", "per"), col_types = cols(Country = col_character(), per = col_double()), na = "..") %>% rename("Country Name" = "Country")
+
+
+rawpoverty <- read_csv("povertyallages.csv", col_types = cols(
+  LOCATION = col_character(),
+  SUBJECT = col_character(),
+  Value = col_double()
+))
+```
+
+```{r plot 1}
+gdpplot <- gdp %>%
+  drop_na() %>%
+  left_join(onepercent, by = "Country Name") %>%
+  drop_na() %>%
+  rename(GDP = "2017", country = "Country Name") %>%
+  ggplot(mapping = aes(x = GDP, 
+                       y = per, 
+                       text = paste("GDP: ", GDP, '<br>Top 1%: ', per, '%<br>', country))) +
+  geom_point(size = 1.5, alpha = 0.75, color = "deepskyblue4") +
+  labs(title = "How Much GDP is Owned by Richest 1% (by Country)",
+       subtitle = "Higher GDP isn't necessarily associated with income equality.",
+       x = "GDP per capita",
+       y = "% GDP to Top 1% Earners",
+       caption = "Source: World Bank Group, United Nations Development Programme") +
+  theme_solarized()
+
+ggplotly(gdpplot, tooltip = "text")
+
+```
+
+```{r plot 2 cleanup}
+
+finalpoverty <- rawpoverty %>%
+  rename(country = LOCATION, age = SUBJECT, value = Value) %>%
+  mutate(age = str_replace_all(age, "66MORE", "66+")) %>%
+  mutate(age = str_replace_all(age, "18_65", "18-65")) %>%
+  mutate(age = str_replace_all(age, "0_17", "0-17"))
+
+  
+```
+
+```{r plot 2}
+
+finalpoverty %>%
+  ggplot(date = finalpoverty, mapping = aes(x = country, 
+                                            y = value,
+                                            fill = age)) +
+  geom_col() +
+  facet_wrap(~ age) +
+  coord_flip() +
+  theme_solarized() +
+  scale_y_discrete(expand = c(0.02,0.0)) +
+  theme(axis.text.y = element_text(size = 7)) +
+  labs(title = "% of Country's Population Living below Poverty Line (by Age)",
+       subtitle = "Countries with higher child poverty rates almost always had higher poverty 
+rates across all age groups, a phenomenon not mirrored with higher elderly poverty rates.",
+       x = "% of Pop. Below Poverty Line",
+       y = "Country",
+       fill = "Age Range")
+```
